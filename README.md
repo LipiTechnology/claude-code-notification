@@ -11,32 +11,10 @@ the turn actually accomplished. Click the notification to jump back to your edit
 └──────────────────────────────────────────────────────┘
 ```
 
-## How it works
-
-The hook runs in two stages so it never slows your turn down:
-
-1. **Foreground (instant return).** It reads the hook payload from stdin, relaunches itself detached
-   via `nohup`, and exits `0` immediately. Claude Code never waits on the notification.
-2. **Detached worker.** If `context_aware=true`, it finds the session transcript from the payload,
-   pulls the last user request and the final assistant reply out of it (plain text, via a tiny
-   `python3` extractor — no `jq` needed), and asks a fast Haiku model to summarize the _primary_
-   outcome. That summary becomes the notification body. Then `alerter` shows it; clicking opens your
-   configured app.
-
-```
-stdin payload ──▶ transcript_path ──▶ extract_text (user request + assistant reply)
-                                          │
-                                          ▼
-                              claude (Haiku) summary ──▶ alerter ──▶ click ──▶ open -a "$action_app"
-```
-
-A recursion guard (`NOTIFY_HOOK_GUARD`) stops the nested `claude` summary call from re-firing the
-Stop hook and looping.
-
 ## Requirements
 
 - **macOS**
-- [`alerter`](https://github.com/vjeantet/alerter) — `brew install alerter`
+- [`alerter`](https://github.com/vjeantet/alerter) — `brew install vjeantet/tap/alerter`
 - The `claude` CLI on your `PATH`
 - `python3` (ships with the Xcode Command Line Tools)
 - _Optional:_ `coreutils` (`brew install coreutils`) for `gtimeout`, used as a safety timeout on the
@@ -117,11 +95,11 @@ want to set, say, the title and `context`:
 "command": "$HOME/.claude/hooks/notify.sh --title \"Claude Code\" --context true"
 ```
 
-| Flag        | Overrides        | Notes                                                               |
-| ----------- | ---------------- | ------------------------------------------------------------------- |
-| `--title`   | title            | Defaults to `Claude Code` if omitted.                               |
-| `--message` | fallback message | Used when summarization is off/unavailable.                         |
-| `--sound`   | sound            | Defaults to `Glass` if omitted.                                     |
+| Flag        | Overrides        | Notes                                                                                                              |
+| ----------- | ---------------- | ------------------------------------------------------------------------------------------------------------------ |
+| `--title`   | title            | Defaults to `Claude Code` if omitted.                                                                              |
+| `--message` | fallback message | Used when summarization is off/unavailable.                                                                        |
+| `--sound`   | sound            | Defaults to `Glass` if omitted.                                                                                    |
 | `--context` | `context_aware`  | `true`/`1`/`yes`/`on` forces summarization on; any other value off. Aliases: `--context-aware`, `--context_aware`. |
 
 Both `--flag value` and `--flag=value` forms work. The named style kicks in when any argument starts
