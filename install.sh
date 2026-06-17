@@ -7,9 +7,9 @@
 #     ./install.sh
 #
 # It symlinks the hook into ~/.claude/hooks (so `git pull` in the repo updates the
-# live hook), requires you to have copied the config from the example, then prints
-# the settings.json block to merge yourself. It deliberately does NOT edit
-# settings.json — mutating your JSON automatically is too risky.
+# live hook), requires you to have copied the config from the example, then
+# automatically merges the required hook entries into ~/.claude/settings.json
+# (backing up the original first).
 set -e
 
 hooks_dir="$HOME/.claude/hooks"
@@ -78,15 +78,76 @@ fi
 ln -sf "$repo_config" "$config"
 echo "Linked: $config -> $repo_config"
 
-cat <<'EOF'
+# Merge hook entries into ~/.claude/settings.json automatically.
+# Back up the existing file first, then use python3 (already a required dep)
+# to do a safe JSON merge: for each hook event, append the notify.sh entry
+# only if one isn't already present.
+settings_file="$HOME/.claude/settings.json"
 
-Add this to ~/.claude/settings.json (merge into any existing "hooks" block):
+echo ""
+echo "Updating $settings_file ..."
 
-{
-  "hooks": {
-    "PermissionRequest": [{"hooks": [{"type": "command", "command": "~/.claude/hooks/notify.sh --title '⚠️ Claude needs permission' --message 'Requesting tool access' --sound 'Funk' --context_aware false"}]}],
-    "Stop":              [{"hooks": [{"type": "command", "timeout": 25, "command": "~/.claude/hooks/notify.sh '✅ Claude finished' 'Response ready' 'Glass'"}]}],
-    "StopFailure":       [{"hooks": [{"type": "command", "timeout": 25, "command": "~/.claude/hooks/notify.sh '❌ Claude error' 'Turn ended with API error' 'Basso'"}]}]
-  }
+python3 - "$settings_file" <<'PYEOF'
+import json, sys, os, shutil
+from datetime import datetime
+
+settings_path = sys.argv[1]
+
+# Read existing settings or start fresh
+if os.path.isfile(settings_path):
+    with open(settings_path, "r") as f:
+        settings = json.load(f)
+    # Create timestamped backup
+    backup = f"{settings_path}.bak.{datetime.now().strftime('%Y%m%d%H%M%S')}"
+    shutil.copy2(settings_path, backup)
+    print(f"  Backed up: {settings_path} -> {backup}")
+else:
+    os.makedirs(os.path.dirname(settings_path), exist_ok=True)
+    settings = {}
+    print(f"  Creating new: {settings_path}")
+
+hooks = settings.setdefault("hooks", {})
+
+# Hook entries to install
+entries = {
+    "PermissionRequest": {
+        "hooks": [{"type": "command", "command": "~/.claude/hooks/notify.sh --title 'Claude needs permission' --message 'Requesting tool access' --sound 'Funk' --context_aware false"}]
+    },
+    "Stop": {
+        "hooks": [{"type": "command", "timeout": 25, "command": "~/.claude/hooks/notify.sh 'Claude finished' 'Response ready' 'Glass'"}]
+    },
+    "StopFailure": {
+        "hooks": [{"type": "command", "timeout": 25, "command": "~/.claude/hooks/notify.sh 'Claude error' 'Turn ended with API error' 'Basso'"}]
+    },
+    "Notification": {
+        "hooks": [{"type": "command", "command": "~/.claude/hooks/notify.sh 'Claude' 'Notification' 'Pop'"}]
+    },
 }
-EOF
+
+for event, entry in entries.items():
+    existing = hooks.get(event, [])
+    # Check if any existing hook already references notify.sh
+    already = False
+    for group in existing:
+        for h in group.get("hooks", []):
+            if "notify.sh" in h.get("command", ""):
+                already = True
+                break
+        if already:
+            break
+    if already:
+        print(f"  {event}: already has notify.sh hook, skipped")
+    else:
+        existing.append(entry)
+        hooks[event] = existing
+        print(f"  {event}: added notify.sh hook")
+
+with open(settings_path, "w") as f:
+    json.dump(settings, f, indent=2, ensure_ascii=False)
+    f.write("\n")
+
+print(f"  Updated: {settings_path}")
+PYEOF
+
+echo ""
+echo "Done! Notification hooks are installed and ready."
