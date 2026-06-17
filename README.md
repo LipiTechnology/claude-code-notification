@@ -25,7 +25,7 @@ the turn actually accomplished. Click the notification to jump back to your edit
 Clone the repo, create your config from the example, then run `install.sh` from inside the checkout:
 
 ```bash
-git clone https://github.com/<you>/claude-code-notification-hook.git
+git clone https://github.com/TheBikramLama/claude-code-notification-hook.git
 cd claude-code-notification-hook
 cp claude-notify.conf.example claude-notify.conf   # git-ignored; your live config
 "${EDITOR:-vi}" claude-notify.conf                 # review/edit to taste
