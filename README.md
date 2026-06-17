@@ -34,15 +34,20 @@ cp claude-notify.conf.example claude-notify.conf   # git-ignored; your live conf
 
 `install.sh` checks dependencies and requires the in-repo `claude-notify.conf` to exist — it won't
 seed one for you, so copy the example first (it halts with a reminder if it's missing). It then makes
-the hook executable and creates two **symlinks** so a later `git pull` updates the live hook and your
-config stays co-located with the checkout:
+the hook executable, creates two **symlinks** so a later `git pull` updates the live hook and your
+config stays co-located with the checkout, and **automatically merges** the hook entries into
+`~/.claude/settings.json` (backing up the original first):
 
 - `~/.claude/hooks/notify.sh` → `commands/notify.sh`
 - `~/.config/claude-notify.conf` → `claude-notify.conf`
 
-Finally it prints the settings block to add to `~/.claude/settings.json` (it won't edit your JSON for
-you). Keep the checkout around — both symlinks point back into it. `claude-notify.conf` is git-ignored,
-so your edits are never touched by `git pull`.
+Keep the checkout around — both symlinks point back into it. `claude-notify.conf` is git-ignored,
+so your edits are never touched by `git pull`. A timestamped backup of `settings.json` is created
+before any changes (e.g. `settings.json.bak.20250617120000`). Re-running the installer is safe — it
+skips hooks that are already present.
+
+The following hook entries are automatically added to `~/.claude/settings.json` by the installer
+(shown here for reference):
 
 ```json
 {
@@ -75,6 +80,16 @@ so your edits are never touched by `git pull`.
             "type": "command",
             "timeout": 25,
             "command": "~/.claude/hooks/notify.sh '❌ Claude error' 'Turn ended with API error' 'Basso'"
+          }
+        ]
+      }
+    ],
+    "Notification": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.claude/hooks/notify.sh '💬 Claude' 'Notification' 'Pop'"
           }
         ]
       }
