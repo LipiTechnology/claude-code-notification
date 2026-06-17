@@ -1,6 +1,7 @@
 # Summarize the turn with a model call (true) or just show the static message
 context_aware=true
 summarize_model=claude-haiku-4-5-20251001
+summarize_timeout=30
 
 # Notification icon. Empty = alerter's default. Example:
 # icon=/Applications/Claude.app/Contents/Resources/electron.icns
