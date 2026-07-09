@@ -1,0 +1,59 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-plugin-manifest.json",
+  "name": "claude-code-notification-hook",
+  "displayName": "Notification Hook",
+  "description": "macOS desktop notifications for Claude Code events, with optional context-aware turn summaries.",
+  "version": "1.0.0",
+  "author": {
+    "name": "Bikram Lama",
+    "email": "contact@bikramlama.com.np"
+  },
+  "repository": "https://github.com/bikramlama/claude-code-notification-hook",
+  "license": "MIT",
+  "keywords": [
+    "notifications",
+    "hooks",
+    "macos",
+    "alerter"
+  ],
+  "userConfig": {
+    "cmd_prefix": {
+      "type": "string",
+      "title": "Command prefix",
+      "description": "Prefix for the alerter/open calls. Empty runs them directly. Set to 'mac' under OrbStack."
+    },
+    "context_aware": {
+      "type": "boolean",
+      "title": "Context-aware summaries",
+      "description": "On 'Claude finished', summarize the turn with a model call instead of a static message.",
+      "default": false
+    },
+    "summarize_model": {
+      "type": "string",
+      "title": "Summary model",
+      "description": "Model used for context-aware summaries.",
+      "default": "claude-haiku-4-5-20251001"
+    },
+    "summarize_timeout": {
+      "type": "number",
+      "title": "Summary timeout (seconds)",
+      "description": "Max seconds for the summary call; 0 disables it.",
+      "default": 30
+    },
+    "icon": {
+      "type": "file",
+      "title": "Notification icon",
+      "description": "Optional icon file. Empty uses alerter's default app icon."
+    },
+    "action_app": {
+      "type": "string",
+      "title": "Click action app",
+      "description": "App opened when you click the notification (e.g. 'Visual Studio Code'). Empty does nothing."
+    },
+    "alerter_timeout": {
+      "type": "number",
+      "title": "Auto-dismiss (seconds)",
+      "description": "Seconds before the notification auto-dismisses. Empty waits until you dismiss it."
+    }
+  }
+}

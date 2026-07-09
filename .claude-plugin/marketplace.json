@@ -1,0 +1,15 @@
+{
+  "name": "claude-code-notification-hook",
+  "description": "macOS desktop notifications for Claude Code, with optional context-aware turn summaries.",
+  "owner": {
+    "name": "Bikram Lama",
+    "email": "contact@bikramlama.com.np"
+  },
+  "plugins": [
+    {
+      "name": "claude-code-notification-hook",
+      "source": "./",
+      "description": "macOS desktop notifications for Claude Code events, with optional context-aware turn summaries."
+    }
+  ]
+}

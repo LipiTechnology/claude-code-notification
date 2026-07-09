@@ -11,6 +11,7 @@ icon="${icon:-}"                          # empty -> alerter's default app icon
 action_app="${action_app:-}"              # empty -> clicking does nothing
 alerter_timeout="${alerter_timeout:-}"    # empty -> notification persists until clicked
 debug="${debug:-false}"
+cmd_prefix="${cmd_prefix:-}"              # prefix for alerter/open, e.g. "mac" under OrbStack; empty = run them directly
 
 # Read hook payload from stdin (Claude Code passes it as JSON on stdin).
 # Only read if stdin is not a tty and NOTIFY_PAYLOAD isn't already set (async re-spawn sets it).
@@ -128,5 +129,5 @@ fi
 args=(--title "$title" --message "$message" --sound "$sound")
 [ -n "$icon" ] && args+=(--app-icon "$icon")
 [ -n "$alerter_timeout" ] && args+=(--timeout "$alerter_timeout")
-alerter "${args[@]}" | grep -q "CONTENTCLICKED" && [ -n "$action_app" ] && open -a "$action_app"
+$cmd_prefix alerter "${args[@]}" | grep -q "CONTENTCLICKED" && [ -n "$action_app" ] && $cmd_prefix open -a "$action_app"
 exit 0

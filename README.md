@@ -22,84 +22,25 @@ the turn actually accomplished. Click the notification to jump back to your edit
 
 ## Install
 
-Clone the repo, create your config from the example, then run `install.sh` from inside the checkout:
+This is a Claude Code **plugin**. Add the repo as a marketplace, then install:
 
-```bash
-git clone https://github.com/TheBikramLama/claude-code-notification-hook.git
-cd claude-code-notification-hook
-cp claude-notify.conf.example claude-notify.conf   # git-ignored; your live config
-"${EDITOR:-vi}" claude-notify.conf                 # review/edit to taste
-./install.sh
+```
+/plugin marketplace add TheBikramLama/claude-code-notification-hook
+/plugin install claude-code-notification-hook
 ```
 
-`install.sh` checks dependencies and requires the in-repo `claude-notify.conf` to exist — it won't
-seed one for you, so copy the example first (it halts with a reminder if it's missing). It then makes
-the hook executable, creates two **symlinks** so a later `git pull` updates the live hook and your
-config stays co-located with the checkout, and **automatically merges** the hook entries into
-`~/.claude/settings.json` (backing up the original first):
+Claude Code prompts you for the settings below when the plugin is enabled, and registers the
+notification hooks automatically — no editing of `settings.json` and no symlinks. Update the settings
+any time from the `/plugin` menu. Pull new versions with `/plugin marketplace update`.
 
-- `~/.claude/hooks/notify.sh` → `commands/notify.sh`
-- `~/.config/claude-notify.conf` → `claude-notify.conf`
+Hooks registered by the plugin:
 
-Keep the checkout around — both symlinks point back into it. `claude-notify.conf` is git-ignored,
-so your edits are never touched by `git pull`. A timestamped backup of `settings.json` is created
-before any changes (e.g. `settings.json.bak.20250617120000`). Re-running the installer is safe — it
-skips hooks that are already present.
-
-The following hook entries are automatically added to `~/.claude/settings.json` by the installer
-(shown here for reference):
-
-```json
-{
-  "hooks": {
-    "PermissionRequest": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "~/.claude/hooks/notify.sh --title '⚠️ Claude needs permission' --message 'Requesting tool access' --sound 'Funk' --context_aware false"
-          }
-        ]
-      }
-    ],
-    "Stop": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "timeout": 25,
-            "command": "~/.claude/hooks/notify.sh '✅ Claude finished' 'Response ready' 'Glass'"
-          }
-        ]
-      }
-    ],
-    "StopFailure": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "timeout": 25,
-            "command": "~/.claude/hooks/notify.sh '❌ Claude error' 'Turn ended with API error' 'Basso'"
-          }
-        ]
-      }
-    ],
-    "Notification": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "~/.claude/hooks/notify.sh '💬 Claude' 'Notification' 'Pop'"
-          }
-        ]
-      }
-    ]
-  }
-}
-```
-
-The positional arguments are the notification **title**, the **fallback message** (used when
-summarization is off or unavailable), and the **sound**.
+| Event               | Sound   | When it fires                       |
+| ------------------- | ------- | ----------------------------------- |
+| `PermissionRequest` | `Funk`  | Claude requests tool access         |
+| `Stop`              | `Glass` | A turn finishes (context-aware here) |
+| `StopFailure`       | `Basso` | A turn ends with an API error       |
+| `PostCompact`       | `Glass` | Context is compacted                |
 
 ### Named arguments
 
@@ -123,25 +64,29 @@ positional hook entries keep working unchanged.
 
 ## Configuration
 
-Settings live in `~/.config/claude-notify.conf` (sourced as bash `key=value`). All optional:
+Set from the `/plugin` menu (Claude Code prompts for these at enable time). All optional:
 
-| Key               | Default                     | Meaning                                                                                                     |
-| ----------------- | --------------------------- | ----------------------------------------------------------------------------------------------------------- |
-| `context_aware`   | `true`                      | `true` summarizes the turn with a model call; `false` shows the static message and makes **no** model call. |
-| `summarize_model` | `claude-haiku-4-5-20251001` | Model used for the summary.                                                                                 |
-| `icon`            | _(empty)_                   | Path to a notification icon; empty uses alerter's default.                                                  |
-| `action_app`      | _(empty)_                   | App opened when you click the notification, e.g. `"Visual Studio Code"`. Empty = no click action.           |
-| `alerter_timeout` | _(empty)_                   | Seconds before auto-dismiss. Empty = the notification waits until you click/dismiss it.                     |
+| Setting             | Default                     | Meaning                                                                                                     |
+| ------------------- | --------------------------- | ----------------------------------------------------------------------------------------------------------- |
+| `context_aware`     | `false`                     | `true` summarizes the turn with a model call; `false` shows the static message and makes **no** model call. |
+| `summarize_model`   | `claude-haiku-4-5-20251001` | Model used for the summary.                                                                                 |
+| `summarize_timeout` | `30`                        | Max seconds for the summary call; `0` disables it.                                                          |
+| `icon`              | _(empty)_                   | Path to a notification icon; empty uses alerter's default.                                                  |
+| `action_app`        | _(empty)_                   | App opened when you click the notification, e.g. `Visual Studio Code`. Empty = no click action.             |
+| `alerter_timeout`   | _(empty)_                   | Seconds before auto-dismiss. Empty = the notification waits until you click/dismiss it.                     |
+| `cmd_prefix`        | _(empty)_                   | Prefix for the `alerter`/`open` calls. Empty runs them directly; set to `mac` under OrbStack.               |
 
-You can also point at a different config file with the `CLAUDE_NOTIFY_CONFIG` environment variable.
+<!-- ponytail: script also sources ~/.config/claude-notify.conf (or $CLAUDE_NOTIFY_CONFIG) if present, for non-plugin use. -->
+Advanced: the script still sources `~/.config/claude-notify.conf` (or `$CLAUDE_NOTIFY_CONFIG`) as bash
+`key=value` if present, which overrides the plugin settings.
 
 ## Layout
 
 ```
-install.sh                  ← run this from the checkout
-commands/notify.sh          ← the Stop hook; ~/.claude/hooks/notify.sh symlinks here
-claude-notify.conf.example  ← template; copy to claude-notify.conf
-claude-notify.conf          ← your config (git-ignored); ~/.config/claude-notify.conf symlinks here
+.claude-plugin/plugin.json       ← plugin manifest + userConfig
+.claude-plugin/marketplace.json  ← lets the repo be added as a marketplace
+hooks/hooks.json                 ← hook registrations (use ${CLAUDE_PLUGIN_ROOT})
+scripts/notify.sh                ← the notification script
 ```
 
 ## Privacy
