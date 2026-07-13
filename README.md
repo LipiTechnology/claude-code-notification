@@ -74,7 +74,7 @@ Set from the `/plugin` menu (Claude Code prompts for these at enable time). All 
 | `icon`              | `/Applications/Claude.app/.../electron.icns`       | Path to a notification icon; empty uses alerter's default.                                                  |
 | `action_app`        | `Cmux`                                             | App opened when you click the notification, e.g. `Visual Studio Code`. Empty = no click action.             |
 | `alerter_timeout`   | `5`                                                | Seconds before auto-dismiss. Empty = the notification waits until you click/dismiss it.                     |
-| `cmd_prefix`        | `mac`                                              | Prefix for the `alerter`/`open` calls. Empty runs them directly; set to `mac` under OrbStack.               |
+| `cmd_prefix`        | _(empty)_                                          | Prefix for the `alerter`/`open` calls. Empty runs them directly; set to `mac` under OrbStack.               |
 
 <!-- ponytail: script also sources ~/.config/claude-notify.conf (or $CLAUDE_NOTIFY_CONFIG) if present, for non-plugin use. -->
 Advanced: the script still sources `~/.config/claude-notify.conf` (or `$CLAUDE_NOTIFY_CONFIG`) as bash

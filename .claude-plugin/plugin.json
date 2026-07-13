@@ -3,7 +3,7 @@
   "name": "claude-code-notification-hook",
   "displayName": "Notification Hook",
   "description": "macOS desktop notifications for Claude Code events, with optional context-aware turn summaries.",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "author": {
     "name": "Bikram Lama",
     "email": "contact@bikramlama.com.np"
@@ -20,8 +20,7 @@
     "cmd_prefix": {
       "type": "string",
       "title": "Command prefix",
-      "description": "Prefix for the alerter/open calls. Empty runs them directly. Set to 'mac' under OrbStack.",
-      "default": "mac"
+      "description": "Prefix for the alerter/open calls. Empty runs them directly. Set to 'mac' under OrbStack."
     },
     "context_aware": {
       "type": "boolean",
