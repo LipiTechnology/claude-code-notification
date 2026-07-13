@@ -5,7 +5,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "cmd_prefix=\"${user_config.cmd_prefix}\" summarize_model=\"${user_config.summarize_model}\" summarize_timeout=\"${user_config.summarize_timeout}\" icon=\"${user_config.icon}\" action_app=\"${user_config.action_app}\" alerter_timeout=\"${user_config.alerter_timeout}\" \"${CLAUDE_PLUGIN_ROOT}/scripts/notify.sh\" --title 'Claude needs permission' --message 'Requesting tool access' --sound 'Funk' --context_aware false"
+            "command": "\"${CLAUDE_PLUGIN_ROOT}/scripts/notify.sh\" --title 'Claude needs permission' --message 'Requesting tool access' --sound 'Funk' --context_aware false"
           }
         ]
       }
@@ -16,7 +16,7 @@
           {
             "type": "command",
             "timeout": 25,
-            "command": "cmd_prefix=\"${user_config.cmd_prefix}\" summarize_model=\"${user_config.summarize_model}\" summarize_timeout=\"${user_config.summarize_timeout}\" icon=\"${user_config.icon}\" action_app=\"${user_config.action_app}\" alerter_timeout=\"${user_config.alerter_timeout}\" \"${CLAUDE_PLUGIN_ROOT}/scripts/notify.sh\" --title 'Claude finished' --message 'Response ready' --sound 'Glass' --context_aware \"${user_config.context_aware}\""
+            "command": "\"${CLAUDE_PLUGIN_ROOT}/scripts/notify.sh\" --title 'Claude finished' --message 'Response ready' --sound 'Glass'"
           }
         ]
       }
@@ -27,7 +27,7 @@
           {
             "type": "command",
             "timeout": 25,
-            "command": "cmd_prefix=\"${user_config.cmd_prefix}\" summarize_model=\"${user_config.summarize_model}\" summarize_timeout=\"${user_config.summarize_timeout}\" icon=\"${user_config.icon}\" action_app=\"${user_config.action_app}\" alerter_timeout=\"${user_config.alerter_timeout}\" \"${CLAUDE_PLUGIN_ROOT}/scripts/notify.sh\" --title 'Claude error' --message 'Turn ended with API error' --sound 'Basso' --context_aware false"
+            "command": "\"${CLAUDE_PLUGIN_ROOT}/scripts/notify.sh\" --title 'Claude error' --message 'Turn ended with API error' --sound 'Basso' --context_aware false"
           }
         ]
       }
@@ -38,7 +38,7 @@
           {
             "type": "command",
             "timeout": 25,
-            "command": "cmd_prefix=\"${user_config.cmd_prefix}\" summarize_model=\"${user_config.summarize_model}\" summarize_timeout=\"${user_config.summarize_timeout}\" icon=\"${user_config.icon}\" action_app=\"${user_config.action_app}\" alerter_timeout=\"${user_config.alerter_timeout}\" \"${CLAUDE_PLUGIN_ROOT}/scripts/notify.sh\" --title 'Claude compact' --message 'Context trimmed' --sound 'Glass' --context_aware false"
+            "command": "\"${CLAUDE_PLUGIN_ROOT}/scripts/notify.sh\" --title 'Claude compact' --message 'Context trimmed' --sound 'Glass' --context_aware false"
           }
         ]
       }

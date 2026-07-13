@@ -4,14 +4,17 @@
 # Config: defaults below; override in ~/.config/claude-notify.conf
 CONFIG="${CLAUDE_NOTIFY_CONFIG:-$HOME/.config/claude-notify.conf}"
 [ -f "$CONFIG" ] && . "$CONFIG"
-context_aware="${context_aware:-false}"
-summarize_model="${summarize_model:-claude-haiku-4-5-20251001}"
-summarize_timeout="${summarize_timeout:-30}"   # seconds for the summary claude call; 0/empty disables
-icon="${icon:-}"                          # empty -> alerter's default app icon
-action_app="${action_app:-}"              # empty -> clicking does nothing
-alerter_timeout="${alerter_timeout:-}"    # empty -> notification persists until clicked
+# Precedence: plugin user_config (CLAUDE_PLUGIN_OPTION_*) > conf file > default.
+# Claude Code exports user_config as env vars instead of substituting into the
+# hook command, which it now forbids for shell re-parse safety.
+context_aware="${CLAUDE_PLUGIN_OPTION_CONTEXT_AWARE:-${context_aware:-false}}"
+summarize_model="${CLAUDE_PLUGIN_OPTION_SUMMARIZE_MODEL:-${summarize_model:-claude-haiku-4-5-20251001}}"
+summarize_timeout="${CLAUDE_PLUGIN_OPTION_SUMMARIZE_TIMEOUT:-${summarize_timeout:-30}}"   # seconds for the summary claude call; 0/empty disables
+icon="${CLAUDE_PLUGIN_OPTION_ICON:-${icon:-}}"                          # empty -> alerter's default app icon
+action_app="${CLAUDE_PLUGIN_OPTION_ACTION_APP:-${action_app:-}}"        # empty -> clicking does nothing
+alerter_timeout="${CLAUDE_PLUGIN_OPTION_ALERTER_TIMEOUT:-${alerter_timeout:-}}"    # empty -> notification persists until clicked
 debug="${debug:-false}"
-cmd_prefix="${cmd_prefix:-}"              # prefix for alerter/open, e.g. "mac" under OrbStack; empty = run them directly
+cmd_prefix="${CLAUDE_PLUGIN_OPTION_CMD_PREFIX:-${cmd_prefix:-}}"        # prefix for alerter/open, e.g. "mac" under OrbStack; empty = run them directly
 
 # Read hook payload from stdin (Claude Code passes it as JSON on stdin).
 # Only read if stdin is not a tty and NOTIFY_PAYLOAD isn't already set (async re-spawn sets it).

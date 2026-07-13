@@ -25,7 +25,7 @@ the turn actually accomplished. Click the notification to jump back to your edit
 This is a Claude Code **plugin**. Add the repo as a marketplace, then install:
 
 ```
-/plugin marketplace add TheBikramLama/claude-code-notification-hook
+/plugin marketplace add LipiTechnology/claude-code-notification
 /plugin install claude-code-notification-hook
 ```
 
@@ -78,7 +78,7 @@ Set from the `/plugin` menu (Claude Code prompts for these at enable time). All 
 
 <!-- ponytail: script also sources ~/.config/claude-notify.conf (or $CLAUDE_NOTIFY_CONFIG) if present, for non-plugin use. -->
 Advanced: the script still sources `~/.config/claude-notify.conf` (or `$CLAUDE_NOTIFY_CONFIG`) as bash
-`key=value` if present, which overrides the plugin settings.
+`key=value` if present, used as a fallback for non-plugin setups. Plugin settings take precedence over it.
 
 ## Layout
 
