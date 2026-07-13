@@ -20,13 +20,14 @@
     "cmd_prefix": {
       "type": "string",
       "title": "Command prefix",
-      "description": "Prefix for the alerter/open calls. Empty runs them directly. Set to 'mac' under OrbStack."
+      "description": "Prefix for the alerter/open calls. Empty runs them directly. Set to 'mac' under OrbStack.",
+      "default": "mac"
     },
     "context_aware": {
       "type": "boolean",
       "title": "Context-aware summaries",
       "description": "On 'Claude finished', summarize the turn with a model call instead of a static message.",
-      "default": false
+      "default": true
     },
     "summarize_model": {
       "type": "string",
@@ -43,17 +44,20 @@
     "icon": {
       "type": "file",
       "title": "Notification icon",
-      "description": "Optional icon file. Empty uses alerter's default app icon."
+      "description": "Optional icon file. Empty uses alerter's default app icon.",
+      "default": "/Applications/Claude.app/Contents/Resources/electron.icns"
     },
     "action_app": {
       "type": "string",
       "title": "Click action app",
-      "description": "App opened when you click the notification (e.g. 'Visual Studio Code'). Empty does nothing."
+      "description": "App opened when you click the notification (e.g. 'Visual Studio Code'). Empty does nothing.",
+      "default": "Cmux"
     },
     "alerter_timeout": {
       "type": "number",
       "title": "Auto-dismiss (seconds)",
-      "description": "Seconds before the notification auto-dismisses. Empty waits until you dismiss it."
+      "description": "Seconds before the notification auto-dismisses. Empty waits until you dismiss it.",
+      "default": 5
     }
   }
 }

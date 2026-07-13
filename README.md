@@ -68,13 +68,13 @@ Set from the `/plugin` menu (Claude Code prompts for these at enable time). All 
 
 | Setting             | Default                     | Meaning                                                                                                     |
 | ------------------- | --------------------------- | ----------------------------------------------------------------------------------------------------------- |
-| `context_aware`     | `false`                     | `true` summarizes the turn with a model call; `false` shows the static message and makes **no** model call. |
-| `summarize_model`   | `claude-haiku-4-5-20251001` | Model used for the summary.                                                                                 |
-| `summarize_timeout` | `30`                        | Max seconds for the summary call; `0` disables it.                                                          |
-| `icon`              | _(empty)_                   | Path to a notification icon; empty uses alerter's default.                                                  |
-| `action_app`        | _(empty)_                   | App opened when you click the notification, e.g. `Visual Studio Code`. Empty = no click action.             |
-| `alerter_timeout`   | _(empty)_                   | Seconds before auto-dismiss. Empty = the notification waits until you click/dismiss it.                     |
-| `cmd_prefix`        | _(empty)_                   | Prefix for the `alerter`/`open` calls. Empty runs them directly; set to `mac` under OrbStack.               |
+| `context_aware`     | `true`                                             | `true` summarizes the turn with a model call; `false` shows the static message and makes **no** model call. |
+| `summarize_model`   | `claude-haiku-4-5-20251001`                        | Model used for the summary.                                                                                 |
+| `summarize_timeout` | `30`                                               | Max seconds for the summary call; `0` disables it.                                                          |
+| `icon`              | `/Applications/Claude.app/.../electron.icns`       | Path to a notification icon; empty uses alerter's default.                                                  |
+| `action_app`        | `Cmux`                                             | App opened when you click the notification, e.g. `Visual Studio Code`. Empty = no click action.             |
+| `alerter_timeout`   | `5`                                                | Seconds before auto-dismiss. Empty = the notification waits until you click/dismiss it.                     |
+| `cmd_prefix`        | `mac`                                              | Prefix for the `alerter`/`open` calls. Empty runs them directly; set to `mac` under OrbStack.               |
 
 <!-- ponytail: script also sources ~/.config/claude-notify.conf (or $CLAUDE_NOTIFY_CONFIG) if present, for non-plugin use. -->
 Advanced: the script still sources `~/.config/claude-notify.conf` (or `$CLAUDE_NOTIFY_CONFIG`) as bash
